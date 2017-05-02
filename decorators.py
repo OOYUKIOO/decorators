@@ -8,25 +8,42 @@ def name(f):
     return inner
 
 def execTime(f):
+    init = time.time()
     def inner(*args):
-        init = time.time()
-        result = f(*args)
-        end = time.time()
-        print "Execution time: " + str(end-init)
+        result = f(*args) 
         return result
+    end = time.time()
+    t = end-init
+    print "Execution time: " + str(t)
     return inner
 
-@execTime
-def foo(x):
-    start = time.time()
-    end = start + 2
-    while start < end:
-        start = time.time()
-    return x+1
+def memoi(f):
+    cache = {}
+    def inner(*args):
+        if args[0] in cache:
+            return cache[args[0]]
+        else:
+            cache[args[0]] = f(*args)
+            return f(*args)
+    return inner
 
-@name
-def goo(a,b,c):
-    return a+" "+b+" "+c
+@memoi
+def fib(n):
+    if n < 2:
+        return n
+    else:
+        return fib(n-1)+fib(n-2)
 
-print foo(2)
-print goo("hello","hi","bye")
+
+
+print fib(300)
+
+fibcache = {}
+def Fib(n):
+    if n in fibcache:
+        return fibcache[n]
+    else:
+        fibcache[n] = n if n < 2 else fib(n-1)+fib(n-2)
+        return fibcache[n]
+
+
